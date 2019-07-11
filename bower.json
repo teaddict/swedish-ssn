@@ -1,0 +1,32 @@
+{
+  "name": "swedish-ssn-tool",
+  "main": "dist/swedish-ssn.js",
+  "version": "1.0.0",
+  "authors": [
+    "teaddict <cyberasker@gmail.com>"
+  ],
+  "description": "Small utility for validating and generating Swedish social security number.",
+  "moduleType": [
+    "globals",
+    "node"
+  ],
+  "keywords": [
+    "Swedish",
+    "SSN",
+    "Validation",
+    "Generate",
+    "Security",
+    "Number",
+    "Sweden",
+    "Social"
+  ],
+  "license": "GPL",
+  "homepage": "https://github.com/teaddict/swedish-ssn",
+  "ignore": [
+    "**/.*",
+    "node_modules",
+    "bower_components",
+    "test",
+    "tests"
+  ]
+}
