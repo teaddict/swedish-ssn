@@ -1,5 +1,29 @@
 {
-  "presets": ["es2015", "stage-0"],
+  "presets": [
+    [
+      "@babel/preset-env",
+      {
+        "modules": false
+      }
+    ],
+  ],
   "plugins": ["add-module-exports", "transform-es2015-modules-umd"],
-  "moduleId": "SwedishSSN"
+  "moduleId": "SwedishSSN",
+  "env": {
+    "test": {
+      "presets": [
+        [
+          "@babel/preset-env",
+          {
+            "modules": "commonjs"
+          }
+        ]
+      ],
+      "plugins": [
+        "@babel/plugin-syntax-dynamic-import",
+        "@babel/plugin-transform-modules-commonjs",
+        "@babel/plugin-proposal-class-properties"
+      ]
+    }
+  }
 }
