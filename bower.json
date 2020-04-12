@@ -1,7 +1,7 @@
 {
   "name": "swedish-ssn-tool",
   "main": "dist/swedish-ssn.js",
-  "version": "1.0.0",
+  "version": "1.0.1",
   "authors": [
     "teaddict <cyberasker@gmail.com>"
   ],

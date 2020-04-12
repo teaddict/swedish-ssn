@@ -1,6 +1,6 @@
 {
   "name": "swedish-ssn-tool",
-  "version": "1.0.0",
+  "version": "1.0.1",
   "license": "GPL",
   "description": "Small utility for validating and generating Swedish social security number.",
   "author": "teaddict",
