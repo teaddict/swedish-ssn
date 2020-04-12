@@ -63,7 +63,7 @@ const genderEnum = {
 }
 
 function yymmdd(birthdate) {
-  const formatted = birthdate.toLocaleDateString("en-CA", {year: "2-digit", month: "2-digit", day: "2-digit"}).replace(/\D/g, "");
+  const formatted = birthdate.toLocaleDateString("sv-SE", {year: "2-digit", month: "2-digit", day: "2-digit"}).replace(/\D/g, "");
   return formatted;
 }
 
@@ -100,7 +100,7 @@ const flatMap = (arr, f) => [].concat.apply([], arr.map(f))
 
 function getChecksum(ssn) {
   const luhn = [2, 1, 2, 1, 2, 1, 2, 1, 2]
-  const multiplied = ssn.map(function (e, i) {
+  const multiplied = ssn.map((e, i) => {
     return e * luhn[i];
   });
   const digits = flatMap(multiplied, (n) =>
