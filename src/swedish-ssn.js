@@ -3,137 +3,146 @@
  * Project: swedish-ssn
  * Purpose: Validate and generate Swedish SSN's according to https://en.wikipedia.org/wiki/Personal_identity_number_(Sweden)
  * Author:  teaddict
+ * Version: 1.0.2
  */
 
-//! https://github.com/teaddict/swedish-ssn | Version: 1.0.0
 export default class SwedishSSN {
   /**
    * Validates parameter given SSN. Returns true if SSN is valid, otherwise false.
-   * @param ssn - {String}
+   * @param {string} ssn - SSN to validate
    * @returns {boolean}
    */
   static validate(ssn) {
-    if (ssn === undefined || ssn === null) {
+    if (ssn === undefined || ssn === null || ssn === '') {
       return false;
     }
 
-    let ssnAsArray = parse(ssn);
-    if (ssnAsArray.length === 10) {
-      const checkDigit = ssnAsArray.pop();
-      switch(getChecksum(ssnAsArray)) {
-        case checkDigit: return true;
-        default: return false;
-      }
-    } else {
+    const ssnAsArray = parse(ssn);
+    if (ssnAsArray.length !== 10) {
       return false;
     }
+
+    const checkDigit = ssnAsArray.pop();
+    return getChecksum(ssnAsArray) === checkDigit;
   }
 
   /**
    * Creates a valid SSN using random numbers.
-   * @returns {String} - valid ssn.
+   * @returns {string} - valid ssn
    */
   static generateRandomSSN() {
     const birthdate = getRandomDate();
-    let secondPart = getRandomNumber(1000, 9998, 'random');
-    let randomSsn = yymmdd(birthdate) + secondPart;
-    let ssnAsArray = parse(randomSsn);
+    const secondPart = getRandomNumber(1000, 9998, 'random');
+    const randomSsn = yymmdd(birthdate) + secondPart;
+    const ssnAsArray = parse(randomSsn);
     const checksum = getChecksum(ssnAsArray);
-    ssnAsArray.push(checksum)
+    ssnAsArray.push(checksum);
     return ssnFormatter(ssnAsArray);
   }
 
   /**
    * Creates a valid SSN using given date and gender.
-   * @returns {String} - valid ssn.
+   * @param {Date} birthdate - Birth date
+   * @param {string} [gender] - 'male' or 'female'
+   * @returns {string} - valid ssn
    */
   static generateSSNWithParameters(birthdate, gender) {
-    let secondPart = getRandomNumber(1000, 9999, gender);
-    let randomSsn = yymmdd(birthdate) + secondPart;
-    let ssnAsArray = parse(randomSsn);
+    if (!(birthdate instanceof Date) || isNaN(birthdate)) {
+      throw new Error('Invalid birthdate provided');
+    }
+
+    const secondPart = getRandomNumber(1000, 9999, gender);
+    const randomSsn = yymmdd(birthdate) + secondPart;
+    const ssnAsArray = parse(randomSsn);
     const checksum = getChecksum(ssnAsArray);
-    ssnAsArray.push(checksum)
+    ssnAsArray.push(checksum);
     return ssnFormatter(ssnAsArray);
   }
 }
 
-const genderEnum = {
+const genderEnum = Object.freeze({
   MALE: 'male',
   FEMALE: 'female'
-}
+});
 
 function yymmdd(birthdate) {
-  const formatted = birthdate.toLocaleDateString("sv-SE", {year: "2-digit", month: "2-digit", day: "2-digit"}).replace(/\D/g, "");
-  return formatted;
+  try {
+    return birthdate.toLocaleDateString("sv-SE", {
+      year: "2-digit",
+      month: "2-digit",
+      day: "2-digit"
+    }).replace(/\D/g, "");
+  } catch (error) {
+    throw new Error('Invalid date format');
+  }
 }
 
 /**
-*returns a random number as string for second part of ssn
-*/
+ * Returns a random number as string for second part of ssn
+ * @param {number} min - Minimum value
+ * @param {number} max - Maximum value
+ * @param {string} [gender] - Gender specification
+ * @returns {string} - Three digit number as string
+ */
 function getRandomNumber(min, max, gender) {
-  let number = Math.floor(Math.random() * (max - min + 1) + min);
+  const number = Math.floor(Math.random() * (max - min + 1) + min);
+  let result = number;
+
   switch (gender) {
     case genderEnum.MALE:
-      if(isEven(number)) {
-        number = number +1;
-      }
+      result = isEven(number) ? number + 1 : number;
       break;
     case genderEnum.FEMALE:
-      if(isOdd(number)) {
-        number = number + 1;
-      }
-      break;
-    default:
+      result = isOdd(number) ? number + 1 : number;
       break;
   }
-  return number.toString().substring(1);
+
+  return result.toString().substring(1);
 }
 
-function isEven(x) { return (x%2) === 0; }
-function isOdd(x) { return !isEven(x); }
+const isEven = (x) => (x % 2) === 0;
+const isOdd = (x) => !isEven(x);
 
-function getRandomDate(start, end) {
-  return new Date(new Date(1900, 1, 1).getTime() + Math.random() * (new Date(2099,1,1).getTime() - new Date(1900, 1, 1).getTime()))
+function getRandomDate() {
+  const minDate = new Date(1900, 0, 1).getTime();
+  const maxDate = new Date(2099, 11, 31).getTime();
+  return new Date(minDate + Math.random() * (maxDate - minDate));
 }
 
-const flatMap = (arr, f) => [].concat.apply([], arr.map(f))
+const flatMap = (arr, f) => arr.flatMap(f);
 
 function getChecksum(ssn) {
-  const luhn = [2, 1, 2, 1, 2, 1, 2, 1, 2]
-  const multiplied = ssn.map((e, i) => {
-    return e * luhn[i];
-  });
-  const digits = flatMap(multiplied, (n) =>
-    (n >= 10) ? [sumOfNum(n)] : [n]
+  const luhn = [2, 1, 2, 1, 2, 1, 2, 1, 2];
+  const multiplied = ssn.map((e, i) => e * luhn[i]);
+  const digits = flatMap(multiplied, (n) => 
+    n >= 10 ? [sumOfNum(n)] : [n]
   );
 
-  const reducer = (accumulator, currentValue) => accumulator + currentValue;
-  const sumOfDigits = digits.reduce(reducer);
-  const checksum = Math.floor((sumOfDigits * 9) % 10);
-  return checksum;
+  const sumOfDigits = digits.reduce((acc, curr) => acc + curr, 0);
+  return Math.floor((sumOfDigits * 9) % 10);
 }
 
 function sumOfNum(num) {
-  return (Math.floor(num % 10) + Math.floor(num / 10));
+  return Math.floor(num % 10) + Math.floor(num / 10);
 }
 
 /**
-* returns a formatted SSN 'yymmdd-fjkm'
-*/
+ * Returns a formatted SSN 'yymmdd-fjkm'
+ * @param {number[]} ssnAsArray - Array of SSN digits
+ * @returns {string} - Formatted SSN
+ */
 function ssnFormatter(ssnAsArray) {
-  const formattedSSN = ssnAsArray.slice(0,6).join('').toString() + "-" + ssnAsArray.slice(6,10).join('').toString();
-  return formattedSSN;
+  const firstPart = ssnAsArray.slice(0, 6).join('');
+  const secondPart = ssnAsArray.slice(6, 10).join('');
+  return `${firstPart}-${secondPart}`;
 }
 
 /**
  * Parse parameter given SSN string. Remove all characters except digits.
- * @param ssn - {String} SSN to parse
- * @returns Int[]
+ * @param {string} ssn - SSN to parse
+ * @returns {number[]} - Array of digits
  */
 function parse(ssn) {
-  const cleaned = ssn.replace(/\D/g, "").split("")
-  if(cleaned.length === 12) {
-    return cleaned.slice(2,12).map(Number);
-  }
-  return cleaned.map(Number);
+  const cleaned = ssn.replace(/\D/g, "").split("").map(Number);
+  return cleaned.length === 12 ? cleaned.slice(2, 12) : cleaned;
 }

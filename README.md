@@ -1,130 +1,170 @@
 Swedish Personal Number or Swedish Social Security Number Validation and Generation
 ===================================
 
-- A micro Javascript library for validating and generating Swedish Personal Number.
-- Lightweight
-- No dependencies
+A modern JavaScript library for validating and generating Swedish Personal Numbers (Social Security Numbers).
 
-Installation
-------------
+[![npm version](https://badge.fury.io/js/swedish-ssn-tool.svg)](https://badge.fury.io/js/swedish-ssn-tool)
+[![License: GPL](https://img.shields.io/badge/License-GPL-blue.svg)](LICENSE)
 
-NPM
+## Features
 
-```sh
+- 🔍 Validate Swedish Personal Numbers
+- 🎲 Generate valid random SSNs
+- 👥 Generate SSNs with specific gender
+- 📅 Support for both YY and YYYY date formats
+- 0️⃣ Zero dependencies
+- 🌐 Works in Node.js and browsers
+- 📦 Modern ES modules and UMD builds
+
+## Installation
+
+```bash
+# Using npm
 npm install swedish-ssn-tool
+
+# Using yarn
+yarn add swedish-ssn-tool
+
+# Using pnpm
+pnpm add swedish-ssn-tool
 ```
 
-Bower
+## Usage
 
-```sh
-bower install swedish-ssn-tool
-```
+### ES Modules (Recommended)
 
-Usage
------
+```js
+import SwedishSSN from 'swedish-ssn-tool';
 
-ES6
-
-``` js
-import SwedishSSN from "../swedish-ssn"
+// Validate an SSN
 const isValid = SwedishSSN.validate('870430-2713');
-console.log(isValid);
-//  result true
+console.log(isValid); // true
 
+// Generate a random SSN
+const randomSSN = SwedishSSN.generateRandomSSN();
+console.log(randomSSN); // e.g., '901224-1234'
+
+// Generate SSN for specific gender and date
+const femaleSSN = SwedishSSN.generateSSNWithParameters(
+  new Date('1990-12-24'), 
+  'female'
+);
 ```
 
-Using global namespace.
+### Browser (UMD)
 
-``` html
-<script src="https://unpkg.com/swedish-ssn-tool/swedish-ssn.min.js"></script>
+```html
+<script src="https://unpkg.com/swedish-ssn-tool/dist/swedish-ssn.min.js"></script>
 <script>
-  // This is valid SSN
-  var isValid = SwedishSSN.validate('20870430-2713');
-  console.log(isValid);
-  //  result true
+  // Library is available as global SwedishSSN
+  const isValid = SwedishSSN.validate('20870430-2713');
+  console.log(isValid); // true
 </script>
-
 ```
 
-Examples
---------
+## API Reference
 
-Validate SSN
+### `validate(ssn: string): boolean`
 
-``` js
-//  This is valid Swedish SSN
-console.log('valid ssn returns ' + SwedishSSN.validate('870430-2713'));
-//  'valid ssn returns true'
+Validates a Swedish SSN. Returns `true` if valid, `false` otherwise.
 
-//  This is invalid Swedish SSN
-console.log('invalid ssn returns ' + SwedishSSN.validate('870430-2714'));
-//  'invalid ssn returns false'
-
+```js
+SwedishSSN.validate('870430-2713');  // true
+SwedishSSN.validate('20870430-2713'); // true (YYYY format)
+SwedishSSN.validate('invalid');       // false
 ```
 
-Generate SSN
+### `generateRandomSSN(): string`
 
-``` js
-//  generate a random SSN
-var fakeSSN =  SwedishSSN.generateRandomSSN();
-//  now validate it
-console.log('Is ssn valid: ' + SwedishSSN.validate(fakeSSN));
+Generates a random valid Swedish SSN.
+
+```js
+const ssn = SwedishSSN.generateRandomSSN();
+// Returns formatted SSN like '870430-2713'
 ```
 
-Generate SSN With Parameters
+### `generateSSNWithParameters(birthdate: Date, gender?: 'male' | 'female'): string`
 
-``` js
-//  generate a random SSN for female
-var fakeSSN =  SwedishSSN.generateSSNWithParameters(new Date(1970-11-10), 'female');
-//  generate a random SSN for male
-var fakeSSN =  SwedishSSN.generateSSNWithParameters(new Date(1970-11-10), 'male');
-//  generate a random SSN for random gender
-var fakeSSN =  SwedishSSN.generateSSNWithParameters(new Date(1970-11-10));
-//  now validate it
-console.log('Is ssn valid: ' + SwedishSSN.validate(fakeSSN));
+Generates a valid SSN with specified parameters.
+
+```js
+// Generate female SSN
+const femaleSSN = SwedishSSN.generateSSNWithParameters(
+  new Date('1987-04-30'), 
+  'female'
+);
+
+// Generate male SSN
+const maleSSN = SwedishSSN.generateSSNWithParameters(
+  new Date('1987-04-30'), 
+  'male'
+);
+
+// Generate random gender SSN
+const randomSSN = SwedishSSN.generateSSNWithParameters(
+  new Date('1987-04-30')
+);
 ```
 
-Functions
----------
+## Development
 
-### #validate(ssn)
-
-- Validates parameter given SSN. Returns true if SSN is valid, otherwise false
-
-### #generateRandomSSN()
-
-- Generates a random SSN. Returns formatted: '870430-2713'
-
-### #generateSSNWithParameters(birthdate, gender)
-
-- Generates a random SSN with given parameter.
-- Birthdate could be `new Date()` , it will format it in the script
-- Gender could be `male` and `female`, default is random gender
-- Returns formatted: '870430-2713'
-
-Building
---------
-
-```sh
-# Build a distributable, minified UMD library compatible with browsers and Node
-npm run dist
+```bash
+# Install dependencies
+npm install
 
 # Run tests
-npm run test
+npm test
 
+# Build distribution files
+npm run build
+
+# Lint code
+npm run lint
+
+# Format code
+npm run format
 ```
-Test Online
----------
-[check from my website](http://teaddict.net/swedish-ssn.html)
 
-Changelog
----------
+## Format Specification
+
+Swedish Personal Numbers follow this format:
+- YYMMDD-XXXX (10 digits)
+- YYYYMMDD-XXXX (12 digits)
+
+Where:
+- YY/YYYY = Year
+- MM = Month
+- DD = Day
+- XXXX = Four digit sequence where last digit is a checksum
+- The second to last digit indicates gender (even for female, odd for male)
+
+## Contributing
+
+1. Fork the repository
+2. Create your feature branch (`git checkout -b feature/amazing-feature`)
+3. Commit your changes (`git commit -m 'Add some amazing feature'`)
+4. Push to the branch (`git push origin feature/amazing-feature`)
+5. Open a Pull Request
+
+## License
+
+[GPL License](LICENSE)
+
+## Author
+
+teaddict - [GitHub](https://github.com/teaddict)
+
+## Changelog
+
+### 1.0.2
+- Modernized build system with Rollup
+- Added ESM module support
+- Improved testing setup
+- Added TypeScript types
+- Enhanced documentation
+
+### 1.0.1
+- Bug fixes and improvements
 
 ### 1.0.0
 - Initial release
-
-
-License
--------
-
-[GPL License](LICENSE)

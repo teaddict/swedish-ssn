@@ -1,26 +1,24 @@
 {
-  "parser": "babel-eslint",
-  "rules": {
-    "strict": 0,
-    // "quotes": [2, "double"],
-    "consistent-return": 0,
-    "no-unexpected-multiline": 2,
-    // "semi": [2, "always"],
-    "no-unused-vars": [1, { "vars": "all", "args": "none" }],
-    "eqeqeq": 1,
-    "dot-notation": 1,
-    "no-caller": 2,
-    "no-eval": 2,
-    "no-undef" : 1,
-    "no-extend-native": 2,
-    "no-implied-eval": 2,
-    "no-shadow": [2, { "allow": ["err"]}],
-    "no-multi-spaces": 2,
-    "prefer-arrow-callback": 2,
-  },
   "env": {
     "browser": true,
+    "es2022": true,
     "node": true,
-    "mocha": true
+    "jest": true
+  },
+  "extends": [
+    "eslint:recommended",
+    "prettier"
+  ],
+  "parserOptions": {
+    "ecmaVersion": "latest",
+    "sourceType": "module"
+  },
+  "rules": {
+    "no-unused-vars": "warn",
+    "no-console": "warn",
+    "prefer-const": "error",
+    "eqeqeq": "error",
+    "no-var": "error",
+    "prefer-arrow-callback": "error"
   }
 }
