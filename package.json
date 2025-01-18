@@ -22,11 +22,12 @@
     "test": "jest",
     "lint": "eslint src/**/*.js test/**/*.js",
     "format": "prettier --write 'src/**/*.js' 'test/**/*.js'",
-    "prepare": "husky install",
-    "prepublishOnly": "npm run test && npm run build"
+    "prepublishOnly": "npm run test && npm run build",
+    "postinstall": "simple-git-hooks"
   },
   "devDependencies": {
     "@babel/core": "^7.24.0",
+    "@babel/plugin-transform-modules-commonjs": "^7.24.0",
     "@babel/preset-env": "^7.24.0",
     "@babel/register": "^7.23.7",
     "@rollup/plugin-babel": "^6.0.4",
@@ -35,10 +36,10 @@
     "@rollup/plugin-terser": "^0.4.4",
     "eslint": "^8.57.0",
     "eslint-config-prettier": "^9.1.0",
-    "husky": "^9.0.11",
     "jest": "^29.7.0",
     "jest-environment-node": "^29.7.0",
-    "@babel/plugin-transform-modules-commonjs": "^7.24.0",
+    "simple-git-hooks": "^2.9.0",
+    "nano-staged": "^0.8.0",
     "prettier": "^3.2.5",
     "rollup": "^4.12.0"
   },
@@ -48,5 +49,14 @@
   },
   "bugs": {
     "url": "https://github.com/teaddict/swedish-ssn/issues"
+  },
+  "simple-git-hooks": {
+    "pre-commit": "npm run lint && npm test"
+  },
+  "nano-staged": {
+    "*.{js,jsx,ts,tsx}": [
+      "eslint --fix",
+      "prettier --write"
+    ]
   }
 }
