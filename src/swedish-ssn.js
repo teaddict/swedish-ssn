@@ -3,7 +3,7 @@
  * Project: swedish-ssn
  * Purpose: Validate and generate Swedish SSN's according to https://en.wikipedia.org/wiki/Personal_identity_number_(Sweden)
  * Author:  teaddict
- * Version: 1.0.2
+ * Version: 1.0.3
  */
 
 export default class SwedishSSN {
