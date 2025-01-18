@@ -156,6 +156,9 @@ teaddict - [GitHub](https://github.com/teaddict)
 
 ## Changelog
 
+### 1.0.3
+- Update package and simplify build process
+
 ### 1.0.2
 - Modernized build system with Rollup
 - Added ESM module support
